@@ -12,33 +12,37 @@ public class BlackJackHand extends Hand {
 
 	}
 
-	public boolean isBlackJack() {
+	public boolean isBlackJack(List<Card> hand) {
 		boolean blackJack = false;
-		if (getHandValue() == 21) {
+		if (getHandValue(hand) == 21) {
 			blackJack = true;
 		}
 		return blackJack;
 	}
 
-	public boolean isBust() {
+	public boolean isBust(List<Card> hand) {
 		boolean busted = false;
-		if (getHandValue() > 21) {
+		if (getHandValue(hand) > 21) {
 			busted = true;
 		}
 		return busted;
 	}
 
-	@Override
-	public int getHandValue() {
-		List<Card> hand = new ArrayList<>();
-		int totalValue = 0;
-		for (int i = 0; i < hand.size(); i++) {
-			Card c = hand.get(i);
-			totalValue += c.getValue();
-			hand.add(c);
+	public int getHandValue(List<Card> hand) {
+		int handValue = 0;
+		for (Card cards : hand) {
+			int cardValue = cards.getValue();
+			handValue = handValue + cardValue;
 		}
 
-		return totalValue;
+		return handValue;
+
+	}
+
+	@Override
+	public int getHandValue() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

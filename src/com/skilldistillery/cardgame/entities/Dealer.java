@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.Scanner;
 
 import com.skilldistillery.cardgame.blackjack.app.BlackJackApp;
+import com.skilldistillery.cardgame.blackjack.app.BlackJackHand;
 
 public class Dealer extends Player {
 	private Deck deck = new Deck();
 	public int dealerValue;
 	public List<Card> playersHand = new ArrayList<>();
 	public List<Card> dealersHand = new ArrayList<>();
+	public BlackJackHand bjh = new BlackJackHand();
 
 	public void shuffleCards() {
 		System.out.println("Shuffling Cards");
@@ -28,12 +30,14 @@ public class Dealer extends Player {
 
 			cardsInPlayOnUsersTurn();
 			System.out.println();
+			System.out.print("get hand value: ");
+			System.out.println(bjh.getHandValue(playersHand));
 
-			if (playerValue == 21) {
+			if (bjh.isBlackJack(playersHand)) {
 				System.out.println("BLACKJACK!!! YOU WIN!!!");
 				again(kb);
 			}
-			if (playerValue > 21) {
+			if (bjh.isBust(playersHand)) {
 				System.out.println("You BUSTED! Dealer WINS!");
 				again(kb);
 			}
@@ -63,24 +67,26 @@ public class Dealer extends Player {
 		System.out.println("You get a: " + dealtCard);
 		playersHand.add(dealtCard);
 		playerValue += dealtCard.getValue();
+//		bjh.getHandValue(playersHand);
 	}
 
 	public void dealersTurn() {
 		System.out.println("The Dealer flips over his face down card to reveal a: " + dealersHand.get(0));
-		System.out.println(dealersHand + " " + dealerValue);
-		while (dealerValue <= 16) {
+		System.out.println(dealersHand + " " + bjh.getHandValue(dealersHand));
+		while (bjh.getHandValue(dealersHand) <= 16) {
 			System.out.println("Dealer must hit below 17: ");
 			hitDealer();
 		}
-		System.out.println("Dealer stays at: " + dealerValue);
+		System.out.println("Dealer stays at: " + bjh.getHandValue(dealersHand));
 	}
 
 	public void hitDealer() {
+		int dealerValue = 0;
 		Card dealtCard = deck.dealCard();
 		dealersHand.add(dealtCard);
 		System.out.println("Dealer's next card is: " + dealtCard);
 		dealerValue += dealtCard.getValue();
-		System.out.println(dealersHand + " " + dealerValue);
+		System.out.println(dealersHand + " " + bjh.getHandValue(dealersHand));
 	}
 
 	public void cardsInPlayOnUsersTurn() {
@@ -93,6 +99,8 @@ public class Dealer extends Player {
 
 		int numOfPlayers = 2;
 		int firstDeal = 2;
+		dealerValue = 0;
+		playerValue = 0;
 		for (int p = 0; p < numOfPlayers; p++) {
 			for (int i = 0; i < firstDeal; i++) {
 				Card dealtcard = deck.dealCard();
@@ -107,6 +115,7 @@ public class Dealer extends Player {
 			}
 
 		}
+		
 		System.out.println("Your first card is: " + playersHand.get(0));
 		System.out.println("The Dealer's first card is delt face down");
 		System.out.println("Your second card is: " + playersHand.get(1));
@@ -119,11 +128,11 @@ public class Dealer extends Player {
 	}
 
 	public void decideWinner(Scanner kb) {
-		if (playerValue > dealerValue) {
+		if (playerValue > bjh.getHandValue(dealersHand)) {
 			System.out.println("You Win!");
-		} else if (playerValue < dealerValue && dealerValue > 21) {
+		} else if (playerValue < bjh.getHandValue(dealersHand) && bjh.getHandValue(dealersHand) > 21) {
 			System.out.println("Dealer Bust, You Win!");
-		}else if (playerValue == dealerValue) {
+		} else if (playerValue == bjh.getHandValue(dealersHand)) {
 			System.out.println("Its a push, tie game");
 		} else {
 			System.out.println("Dealer Wins");
@@ -135,8 +144,8 @@ public class Dealer extends Player {
 	public void again(Scanner kb) {
 		playersHand.clear();
 		dealersHand.clear();
-		playerValue = 0;
-		dealerValue = 0;
+		int playerValue = 0;
+		int dealerValue = 0;
 		System.out.print("there are ");
 		deck.checkDeckSize();
 		System.out.print(" cards left in the deck.");
