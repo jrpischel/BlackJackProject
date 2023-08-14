@@ -25,7 +25,7 @@ public abstract class Hand {
 		
 	}
 	
-	public void clear() {
+	public void clear(List<Card> hand) {
 		cards().clear();
 		
 	}

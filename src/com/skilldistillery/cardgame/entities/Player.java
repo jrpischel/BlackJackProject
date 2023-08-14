@@ -1,8 +1,6 @@
 package com.skilldistillery.cardgame.entities;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import com.skilldistillery.cardgame.blackjack.app.BlackJackHand;
 

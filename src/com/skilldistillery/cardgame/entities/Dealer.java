@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import com.skilldistillery.cardgame.blackjack.app.BlackJackApp;
 import com.skilldistillery.cardgame.blackjack.app.BlackJackHand;
 
 public class Dealer extends Player {
@@ -35,11 +34,11 @@ public class Dealer extends Player {
 
 			if (bjh.isBlackJack(playersHand)) {
 				System.out.println("BLACKJACK!!! YOU WIN!!!");
-				again(kb);
+//				again(kb);
 			}
 			if (bjh.isBust(playersHand)) {
 				System.out.println("You BUSTED! Dealer WINS!");
-				again(kb);
+//				again(kb);
 			}
 
 			playersChoice();
@@ -73,11 +72,18 @@ public class Dealer extends Player {
 	public void dealersTurn() {
 		System.out.println("The Dealer flips over his face down card to reveal a: " + dealersHand.get(0));
 		System.out.println(dealersHand + " " + bjh.getHandValue(dealersHand));
+		if (bjh.isBlackJack(dealersHand)) {
+			System.out.println("Dealer has 21");
+		}
 		while (bjh.getHandValue(dealersHand) <= 16) {
+			if (bjh.isBust(dealersHand)) {
+				System.out.println("DEALER BUSTED!!! YOU WIN!!!");
+				break;
+			}
 			System.out.println("Dealer must hit below 17: ");
 			hitDealer();
+			System.out.println("Dealer stays at: " + bjh.getHandValue(dealersHand));
 		}
-		System.out.println("Dealer stays at: " + bjh.getHandValue(dealersHand));
 	}
 
 	public void hitDealer() {
@@ -91,7 +97,7 @@ public class Dealer extends Player {
 
 	public void cardsInPlayOnUsersTurn() {
 		System.out.println("The Dealer is showing a: " + dealersHand.get(1));
-		checkPlayerTotal((List<Card>) playersHand, playerValue);
+		checkPlayerTotal((List<Card>) playersHand, bjh.getHandValue(playersHand));
 
 	}
 
@@ -115,7 +121,7 @@ public class Dealer extends Player {
 			}
 
 		}
-		
+
 		System.out.println("Your first card is: " + playersHand.get(0));
 		System.out.println("The Dealer's first card is delt face down");
 		System.out.println("Your second card is: " + playersHand.get(1));
@@ -128,56 +134,57 @@ public class Dealer extends Player {
 	}
 
 	public void decideWinner(Scanner kb) {
-		if (playerValue > bjh.getHandValue(dealersHand)) {
+		if (bjh.getHandValue(playersHand) > bjh.getHandValue(dealersHand)) {
 			System.out.println("You Win!");
-		} else if (playerValue < bjh.getHandValue(dealersHand) && bjh.getHandValue(dealersHand) > 21) {
+		} else if (bjh.getHandValue(playersHand) < bjh.getHandValue(dealersHand)
+				&& bjh.getHandValue(dealersHand) > 21) {
 			System.out.println("Dealer Bust, You Win!");
-		} else if (playerValue == bjh.getHandValue(dealersHand)) {
+		} else if (bjh.getHandValue(playersHand) == bjh.getHandValue(dealersHand)) {
 			System.out.println("Its a push, tie game");
 		} else {
 			System.out.println("Dealer Wins");
 		}
-		again(kb);
+//		again(kb);
 
 	}
 
-	public void again(Scanner kb) {
-		playersHand.clear();
-		dealersHand.clear();
-		int playerValue = 0;
-		int dealerValue = 0;
-		System.out.print("there are ");
-		deck.checkDeckSize();
-		System.out.print(" cards left in the deck.");
-		System.out.println("Would you like to play again?");
-
-		int choice = 0;
-		do {
-			playAgainMenu();
-			choice = kb.nextInt();
-
-			switch (choice) {
-			case 1:
-				deal();
-				usersTurn(kb);
-				dealersTurn();
-				decideWinner(kb);
-				break;
-			case 2:
-				System.out.println("Thanks for playing!");
-				;
-				break;
-			default:
-				System.out.println("Invalid Selection");
-			}
-		} while (choice != 2);
-	}
-
-	public void playAgainMenu() {
-		System.out.println("***************");
-		System.out.println("* Play Again? *");
-		System.out.println("* 1 - YES     *");
-		System.out.println("* 2 - NO      *");
-		System.out.println("***************");
-	}
+//	public void again(Scanner kb) {
+//		bjh.clear(playersHand);
+//		bjh.clear(dealersHand);
+//		int playerValue = 0;
+//		int dealerValue = 0;
+//		System.out.print("there are ");
+//		deck.checkDeckSize();
+//		System.out.print(" cards left in the deck.");
+//		System.out.println("Would you like to play again?");
+//
+//		int choice = 0;
+//		do {
+//			playAgainMenu();
+//			choice = kb.nextInt();
+//
+//			switch (choice) {
+//			case 1:
+//				deal();
+//				usersTurn(kb);
+//				dealersTurn();
+//				decideWinner(kb);
+//				break;
+//			case 2:
+//				System.out.println("Thanks for playing!");
+//				;
+//				break;
+//			default:
+//				System.out.println("Invalid Selection");
+//			}
+//		} while (choice != 2);
+//	}
+//
+//	public void playAgainMenu() {
+//		System.out.println("***************");
+//		System.out.println("* Play Again? *");
+//		System.out.println("* 1 - YES     *");
+//		System.out.println("* 2 - NO      *");
+//		System.out.println("***************");
+//	}
 }
